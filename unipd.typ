@@ -4,6 +4,8 @@
 #let unipd-gray = rgb("#484f59");
 #let unipd-lightgray = rgb("#fbfef9");
 
+#let unipd-title = state("unipd-title", none)
+#let unipd-subtitle = state("unipd-subtitle", none)
 #let unipd-author = state("unipd-author", none)
 #let unipd-date = state("unipd-date", none)
 #let unipd-progress-bar = state("unipd-progress-bar", true)
@@ -12,6 +14,8 @@
   aspect-ratio: "16-9",
   author: none,
   date: none,
+  title: none,
+  subtitle: none,
   progress-bar: true,
   body,
 ) = {
@@ -21,10 +25,12 @@
     header: none,
     footer: none,
   )
-  set text(size: 25pt)
-  show footnote.entry: set text(size: .6em)
+  set text(size: 22pt)
+  show footnote.entry: set text(size: .65em)
 
   unipd-progress-bar.update(progress-bar)
+  unipd-title.update(title)
+  unipd-subtitle.update(subtitle)
   unipd-author.update(author)
   unipd-date.update(date)
 
@@ -49,15 +55,15 @@
     if (subtitle != none) {
       align(
         center,
-        box(inset: (x: 2em), text(size: 30pt, subtitle)),
+        box(inset: (x: 2em), text(size: 26pt, style: "italic", subtitle)),
       )
     }
-    v(8%)
+    v(10%)
     h(7.5%)
     text(size: 24pt, unipd-author.display())
     linebreak()
     h(7.5%)
-    text(size: 24pt, unipd-date.display())
+    text(size: 20pt, unipd-date.display())
   })
 }
 
@@ -69,28 +75,7 @@
   new-section: none,
   body,
 ) = {
-  let body = pad(x: 2em, y: .1em, body)
-
-  let progress-barline = locate(loc => {
-    if unipd-progress-bar.at(loc) {
-      let cell = block.with(
-        width: 100%,
-        height: 100%,
-        above: 0pt,
-        below: 0pt,
-        breakable: false,
-      )
-
-      utils.polylux-progress(ratio => {
-        grid(
-          rows: 2pt,
-          columns: (ratio * 100%, 1fr),
-          cell(fill: unipd-red),
-          cell(fill: unipd-gray),
-        )
-      })
-    } else { [] }
-  })
+  let body = pad(x: 2em, top: 1em, body)
 
   let header-text = {
     if header != none {
@@ -99,22 +84,22 @@
       if new-section != none {
         utils.register-section(new-section)
       }
+      show heading: set text(size: 22pt)
       set text(fill: white)
       pad(
-        x: 0.4em,
-        y: 0.2em,
+        x: 1.5em,
+        y: 1.5em,
         grid(
-          columns: (50%, 35%, 15%),
+          columns: (50%, 50%),
           align(horizon + left, heading(level: 2, title)),
           if (hide-section) {
             box()
           } else {
             align(horizon + right, text(
-              fill: unipd-red.lighten(65%),
+              fill: white,
               utils.current-section,
             ))
-          },
-          align(top + right, image("images/logo_white.svg")),
+          }
         ),
       )
     } else { [] }
@@ -124,47 +109,36 @@
     set align(top)
     block(fill: unipd-red, grid(
       rows: (auto, auto),
-      progress-barline,
       header-text,
     ))
   }
 
   let footer = {
-    set text(size: 10pt)
+    set text(size: 12pt)
     set align(center + bottom)
-    let cell(fill: none, it) = rect(
-      width: 100%,
-      height: 100%,
-      inset: 1mm,
-      outset: 0mm,
-      fill: fill,
-      stroke: none,
-      align(horizon, text(fill: white, it)),
-    )
     if footer != none {
       footer
     } else {
-      place(
-        bottom,
-        image("images/background_wave.svg", width: 100%),
+      show: block.with(width: 100%, height: auto, fill: unipd-red);
+      set text(fill: white)
+      pad(
+        y: 1em,
+        x: 2.5em,
+        grid(
+        columns: (1fr, 1fr, 1fr),
+        align(left, unipd-author.display()),
+        unipd-title.display(),
+        align(right, logic.logical-slide.display() + [~/ ~] + utils.last-slide-number),
       )
-      show: block.with(width: 100%, height: auto)
-      grid(
-        columns: (25%, 1fr, 15%, 10%),
-        rows: (1.5em, auto),
-        cell(box()),
-        cell(unipd-author.display()),
-        cell(unipd-date.display()),
-        cell(logic.logical-slide.display() + [~/ ~] + utils.last-slide-number),
       )
     }
   }
 
   set page(
-    margin: (top: 3em, bottom: 1.5em, x: 0em),
+    margin: (top: 3em, bottom: 2em, x: 0em),
     header: header,
     footer: footer,
-    footer-descent: 0em,
+    footer-descent: 0.15em,
     header-ascent: .6em,
   )
 
