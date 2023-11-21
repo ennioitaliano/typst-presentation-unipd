@@ -8,7 +8,6 @@
 #let unipd-subtitle = state("unipd-subtitle", none)
 #let unipd-author = state("unipd-author", none)
 #let unipd-date = state("unipd-date", none)
-#let unipd-progress-bar = state("unipd-progress-bar", true)
 
 #let unipd-theme(
   aspect-ratio: "16-9",
@@ -16,7 +15,6 @@
   date: none,
   title: none,
   subtitle: none,
-  progress-bar: true,
   body,
 ) = {
   set page(
@@ -28,7 +26,6 @@
   set text(size: 22pt)
   show footnote.entry: set text(size: .65em)
 
-  unipd-progress-bar.update(progress-bar)
   unipd-title.update(title)
   unipd-subtitle.update(subtitle)
   unipd-author.update(author)
