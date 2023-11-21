@@ -1,8 +1,6 @@
 #import "@preview/polylux:0.3.1": logic, utils
 
 #let unipd-red = rgb("#9b0014");
-#let unipd-gray = rgb("#484f59");
-#let unipd-lightgray = rgb("#fbfef9");
 
 #let unipd-title = state("unipd-title", none)
 #let unipd-subtitle = state("unipd-subtitle", none)
